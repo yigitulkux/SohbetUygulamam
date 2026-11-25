@@ -2666,6 +2666,7 @@ u
 
   <div id="toast" hidden></div>
 
+  <script src="./env.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
     import {
@@ -2679,14 +2680,23 @@ u
       updateDoc, deleteField, getDocs
     } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
 
+    const ENV = window.__ENV__ || {};
+    if (!ENV.FIREBASE_API_KEY) {
+      const warn = document.getElementById("fileWarn");
+      if (warn) {
+        warn.textContent = "env.js bulunamadı. env.example.js dosyasını env.js olarak kopyalayıp Firebase anahtarlarını ekle.";
+        warn.hidden = false;
+      }
+    }
+
     const firebaseConfig = {
-      apiKey: "AIzaSyDxMa8K60NEN47WeaiODBC0OM81SQXx2dE",
-      authDomain: "sohbet-uygulamam-7b149.firebaseapp.com",
-      projectId: "sohbet-uygulamam-7b149",
-      storageBucket: "sohbet-uygulamam-7b149.firebasestorage.app",
-      messagingSenderId: "137453561863",
-      appId: "1:137453561863:web:f7073ffc3f84e06f8662a2",
-      measurementId: "G-6K3WS9FZZ0"
+      apiKey: ENV.FIREBASE_API_KEY || "",
+      authDomain: ENV.FIREBASE_AUTH_DOMAIN || "",
+      projectId: ENV.FIREBASE_PROJECT_ID || "",
+      storageBucket: ENV.FIREBASE_STORAGE_BUCKET || "",
+      messagingSenderId: ENV.FIREBASE_MESSAGING_SENDER_ID || "",
+      appId: ENV.FIREBASE_APP_ID || "",
+      measurementId: ENV.FIREBASE_MEASUREMENT_ID || ""
     };
 
     /* Arama sunuculari (STUN). Gerekirse buraya TURN eklenir. */
