@@ -1,7 +1,7 @@
 # Environment & secrets
 .env
 .env.*
-env.js
+
 
 # OS & editor files
 .DS_Store
