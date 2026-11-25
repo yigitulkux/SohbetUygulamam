@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 
 const keys = [
   "FIREBASE_API_KEY",
@@ -10,18 +10,31 @@ const keys = [
   "FIREBASE_MEASUREMENT_ID",
 ];
 
-const env = {};
-for (const k of keys) {
-  env[k] = process.env[k] || "";
-}
-
 mkdirSync("dist", { recursive: true });
-copyFileSync("index29.html", "dist/index.html");
-copyFileSync("index29.html", "dist/index29.html");
-writeFileSync(
-  "dist/env.js",
-  `window.__ENV__ = ${JSON.stringify(env, null, 2)};\n`,
-  "utf8"
-);
+copyFileSync("index.html", "dist/index.html");
 
-console.log("Build complete: dist/index.html, dist/index29.html, dist/env.js");
+const clean = (v) => String(v || "").trim().replace(/^["']|["']$/g, "");
+
+if (clean(process.env.FIREBASE_API_KEY)) {
+  const env = {};
+  for (const k of keys) {
+    env[k] = clean(process.env[k]);
+  }
+  writeFileSync(
+    "dist/env.js",
+    `window.__ENV__ = ${JSON.stringify(env, null, 2)};\n`,
+    "utf8"
+  );
+  console.log("Build complete: dist/index.html + dist/env.js (from env vars)");
+} else if (existsSync("env.js")) {
+  copyFileSync("env.js", "dist/env.js");
+  console.log("Build complete: dist/index.html + dist/env.js (copied env.js)");
+} else {
+  const env = Object.fromEntries(keys.map((k) => [k, ""]));
+  writeFileSync(
+    "dist/env.js",
+    `window.__ENV__ = ${JSON.stringify(env, null, 2)};\n`,
+    "utf8"
+  );
+  console.log("Build complete: dist/index.html + dist/env.js (empty fallback)");
+}
