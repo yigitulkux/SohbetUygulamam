@@ -1,0 +1,14 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+**/env.js
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+*.log
+
+# Build & dependencies
+dist/
+node_modules/
